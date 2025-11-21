@@ -50,51 +50,118 @@
     <script>
         // --- 遊戲資料 ---
         const QUESTIONS = [
-            {
-                scenario: "早晨的混亂",
-                desc: "希澈剛睡醒，發現愛犬「起伏」正在瘋狂咬他的限量版拖鞋。這時希澈的第一反應是？",
-                emoji: "🐶",
-                color: "bg-amber-500",
-                options: [
-                    { text: "溫柔地摸摸起伏的頭說：「沒關係～」", correct: false, msg: "怎麼可能！這可是有潔癖的希大！" },
-                    { text: "崩潰大叫「呀！！起伏！！」並立刻拿出吸塵器", correct: true, msg: "沒錯！潔癖+愛狗但崩潰才是日常！" },
-                    { text: "無視牠，繼續睡覺", correct: false, msg: "宇宙大明星是不會允許家裡髒亂的！" }
-                ]
-            },
-            {
-                scenario: "《認識的哥哥》錄製中",
-                desc: "前奏剛響起 0.5 秒，是一首 90 年代的女團舞曲。身為「人體點唱機」的希澈會？",
-                emoji: "🎵",
-                color: "bg-pink-500",
-                options: [
-                    { text: "衝出去搶答，並完美複製整首舞蹈", correct: true, msg: "正解！連表情管理都100%還原！" },
-                    { text: "把機會讓給嘉賓表現", correct: false, msg: "在猜歌環節，希澈是沒有讓步這回事的！" },
-                    { text: "坐在位子上跟徐章勳聊天", correct: false, msg: "聽到前奏身體就會自動反應了！" }
-                ]
-            },
-            {
-                scenario: "休假日的召喚峽谷",
-                desc: "難得的休息日，希澈正在打 LoL，結果隊友一直送頭（Feed）。這時他的反應是？",
-                emoji: "🎮",
-                color: "bg-indigo-600",
-                options: [
-                    { text: "放下手機，深呼吸修身養性", correct: false, msg: "不可能，勝負欲極強的他忍不了！" },
-                    { text: "打字鼓勵隊友：「我們下次努力^^」", correct: false, msg: "這不是希澈，這是天使吧？" },
-                    { text: "開啟暴走碎念模式，一邊Carry一邊嘆氣", correct: true, msg: "沒錯！一邊碎念一邊展現神操作！" }
-                ]
-            },
-            {
-                scenario: "Ending 妖精",
-                desc: "演唱會舞台結束，鏡頭特寫到了希澈臉上。為了守護宇宙大明星的尊嚴，他會？",
-                emoji: "✨",
-                color: "bg-blue-500",
-                options: [
-                    { text: "害羞地比個手指愛心", correct: false, msg: "太普通了！這不是宇宙大明星的格調！" },
-                    { text: "撥弄長髮，露出自信且嫵媚的微笑", correct: true, msg: "就是這個！讓人入坑的致命美貌！" },
-                    { text: "拿出一把梳子開始梳頭", correct: false, msg: "雖然很有可能...但這次我們要帥氣的！" }
-                ]
-            }
-        ];
+    {
+        scenario: "早晨的混亂",
+        desc: "希澈剛睡醒，發現愛犬「起伏」正在瘋狂咬他的限量版拖鞋。這時希澈的第一反應是？",
+        emoji: "🐶",
+        color: "bg-amber-500",
+        options: [
+            { text: "溫柔地摸摸起伏的頭說：「沒關係～」", correct: false, msg: "怎麼可能！這可是有潔癖的希大！" },
+            { text: "崩潰大叫「呀！！起伏！！」並立刻拿出吸塵器", correct: true, msg: "沒錯！潔癖+愛狗但崩潰才是日常！" },
+            { text: "無視牠，繼續睡覺", correct: false, msg: "宇宙大明星是不會允許家裡髒亂的！" }
+        ]
+    },
+    {
+        scenario: "《認識的哥哥》錄製中",
+        desc: "前奏剛響起 0.5 秒，是一首 90 年代的女團舞曲。身為「人體點唱機」的希澈會？",
+        emoji: "🎵",
+        color: "bg-pink-500",
+        options: [
+            { text: "衝出去搶答，並完美複製整首舞蹈", correct: true, msg: "正解！連表情管理都100%還原！" },
+            { text: "把機會讓給嘉賓表現", correct: false, msg: "在猜歌環節，希澈是沒有讓步這回事的！" },
+            { text: "坐在位子上跟徐章勳聊天", correct: false, msg: "聽到前奏身體就會自動反應了！" }
+        ]
+    },
+    {
+        scenario: "休假日的召喚峽谷",
+        desc: "難得的休息日，希澈正在打 LoL，結果隊友一直送頭（Feed）。這時他的反應是？",
+        emoji: "🎮",
+        color: "bg-indigo-600",
+        options: [
+            { text: "放下手機，深呼吸修身養性", correct: false, msg: "不可能，勝負欲極強的他忍不了！" },
+            { text: "打字鼓勵隊友：「我們下次努力^^」", correct: false, msg: "這不是希澈，這是天使吧？" },
+            { text: "開啟暴走碎念模式，一邊Carry一邊嘆氣", correct: true, msg: "沒錯！一邊碎念一邊展現神操作！" }
+        ]
+    },
+    {
+        scenario: "Ending 妖精",
+        desc: "演唱會舞台結束，鏡頭特寫到了希澈臉上。為了守護宇宙大明星的尊嚴，他會？",
+        emoji: "✨",
+        color: "bg-blue-500",
+        options: [
+            { text: "害羞地比個手指愛心", correct: false, msg: "太普通了！這不是宇宙大明星的格調！" },
+            { text: "撥弄長髮，露出自信且嫵媚的微笑", correct: true, msg: "就是這個！讓人入坑的致命美貌！" },
+            { text: "拿出一把梳子開始梳頭", correct: false, msg: "雖然很有可能...但這次我們要帥氣的！" }
+        ]
+    }, // <--- 這裡一定要有逗號
+    {
+        scenario: "動漫魂燃燒",
+        desc: "在日本巨蛋演唱會上，到了自我介紹的環節，希澈最可能脫口而出的一句話是？",
+        emoji: "🤘",
+        color: "bg-red-500",
+        options: [
+            { text: "大家今天過得好嗎？我是希澈。", correct: false, msg: "太正經了！這樣不夠二次元！" },
+            { text: "Nico Nico Ni~ （搭配招牌手勢）", correct: true, msg: "正解！這可是他的招牌動作，還曾逼迫Momo一起做！" },
+            { text: "我是Super Junior的隊長利特", correct: false, msg: "這是隔壁棚的台詞啦！" }
+        ]
+    },
+    {
+        scenario: "傳說中的選秀",
+        desc: "大家都知道希澈當年參加 SM 選秀時遲到了，那他最後是靠什麼入選的？",
+        emoji: "🎤",
+        color: "bg-yellow-500",
+        options: [
+            { text: "展現了驚人的機械舞實力", correct: false, msg: "雖然他跳舞不錯，但那天重點不是這個！" },
+            { text: "因為臉太帥了，唱了一首國歌就合格", correct: true, msg: "沒錯！這就是傳說中的「臉蛋通行證」！" },
+            { text: "表演了精湛的演技哭戲", correct: false, msg: "不，他當時只唱了國歌！" }
+        ]
+    },
+	
+    {
+        scenario: "機場時尚 OOTD",
+        desc: "今天要出國巡演，記者們都在機場等著。請問希澈最可能的穿搭是？",
+        emoji: "✈️",
+        color: "bg-purple-500",
+        options: [
+            { text: "全套亮紅色運動服 + 拖鞋 + 口罩", correct: true, msg: "Bingo！舒適最重要，而且紅色是本命色！" },
+            { text: "筆挺的黑色西裝 + 皮鞋", correct: false, msg: "這是始源才會穿的風格吧？" },
+            { text: "簡單的白T + 牛仔褲", correct: false, msg: "太樸素了，宇宙大明星需要一點色彩！" }
+        ]
+    },
+    {
+        scenario: "追劇廢人模式",
+        desc: "希澈待在家裡不出門，盯著電視螢幕傻笑，請問他正在看什麼？",
+        emoji: "📺",
+        color: "bg-emerald-600",
+        options: [
+             { text: "最新的熱門歐美影集", correct: false, msg: "機率不高喔！" },
+             { text: "祝緒丹主演的《倚天屠龍記》", correct: true, msg: "正解！他可是周芷若的超級狂粉！" },
+             { text: "重看自己演的戲劇", correct: false, msg: "比起自己，他更愛看古裝美女！" }
+        ]
+    },
+    {
+        scenario: "車內的禁忌",
+        desc: "希澈開車載成員出去，這時候東海拿出了一包餅乾準備要吃，希澈會？",
+        emoji: "🚫",
+        color: "bg-red-600",
+        options: [
+             { text: "貼心地幫他撕開包裝", correct: false, msg: "你想太多了！" },
+             { text: "一起吃並討論餅乾好不好吃", correct: false, msg: "怎麼可能！車子會髒掉！" },
+             { text: "大喊「不准在車上吃東西！」並威脅趕下車", correct: true, msg: "沒錯！車內整潔是絕對底線！" }
+        ]
+    },
+    {
+        scenario: "宇宙大明星的自信",
+        desc: "如果有主持人問希澈：「你覺得誰是世界上最帥的人？」他會回答？",
+        emoji: "🪞",
+        color: "bg-rose-500",
+        options: [
+             { text: "謙虛地說是始源或東海", correct: false, msg: "這不是希澈的Style！" },
+             { text: "看著鏡子說：「就在這裡啊！」", correct: true, msg: "正確！自信爆棚才是金希澈！" },
+             { text: "說是剛出道的男團偶像", correct: false, msg: "在他眼裡，以前的自己才是最無敵的！" }
+        ]
+    }
+];
 
         const RESULTS = {
             perfect: { title: "🌸 核心花瓣認證 🌸", desc: "太強了！你是希澈肚子裡的蛔蟲吧！完全掌握了宇宙大明星的精髓！", color: "text-pink-600" },
@@ -125,6 +192,8 @@
                             開始遊戲
                         </button>
                         <p class="mt-6 text-xs text-slate-400">For my dear GF 💙</p>
+                        <p class="mt-1 text-xs text-slate-400">Your BF Jayden</p>
+
                     </div>
                 `;
             } else if (currentState === 'play') {
@@ -196,7 +265,6 @@
                 startPetalRain();
             }
         }
-
         // --- 邏輯控制 ---
         function startGame() {
             currentState = 'play';
