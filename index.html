@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宇宙大明星保衛戰</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; }
+        
+        /* 動畫定義 */
+        @keyframes fall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .petal {
+            position: fixed;
+            top: -20px;
+            user-select: none;
+            pointer-events: none;
+            z-index: 50;
+            font-size: 20px;
+        }
+        .slide-in { animation: slideIn 0.5s ease-out; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+
+    <!-- 遊戲容器 -->
+    <div id="app" class="w-full max-w-md mx-auto relative z-10">
+        <!-- 內容由 JS 動態生成 -->
+    </div>
+
+    <!-- 預載 svg icons -->
+    <div style="display:none;">
+        <svg id="icon-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+        <svg id="icon-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+    </div>
+
+    <script>
+        // --- 遊戲資料 ---
+        const QUESTIONS = [
+            {
+                scenario: "早晨的混亂",
+                desc: "希澈剛睡醒，發現愛犬「起伏」正在瘋狂咬他的限量版拖鞋。這時希澈的第一反應是？",
+                emoji: "🐶",
+                color: "bg-amber-500",
+                options: [
+                    { text: "溫柔地摸摸起伏的頭說：「沒關係～」", correct: false, msg: "怎麼可能！這可是有潔癖的希大！" },
+                    { text: "崩潰大叫「呀！！起伏！！」並立刻拿出吸塵器", correct: true, msg: "沒錯！潔癖+愛狗但崩潰才是日常！" },
+                    { text: "無視牠，繼續睡覺", correct: false, msg: "宇宙大明星是不會允許家裡髒亂的！" }
+                ]
+            },
+            {
+                scenario: "《認識的哥哥》錄製中",
+                desc: "前奏剛響起 0.5 秒，是一首 90 年代的女團舞曲。身為「人體點唱機」的希澈會？",
+                emoji: "🎵",
+                color: "bg-pink-500",
+                options: [
+                    { text: "衝出去搶答，並完美複製整首舞蹈", correct: true, msg: "正解！連表情管理都100%還原！" },
+                    { text: "把機會讓給嘉賓表現", correct: false, msg: "在猜歌環節，希澈是沒有讓步這回事的！" },
+                    { text: "坐在位子上跟徐章勳聊天", correct: false, msg: "聽到前奏身體就會自動反應了！" }
+                ]
+            },
+            {
+                scenario: "休假日的召喚峽谷",
+                desc: "難得的休息日，希澈正在打 LoL，結果隊友一直送頭（Feed）。這時他的反應是？",
+                emoji: "🎮",
+                color: "bg-indigo-600",
+                options: [
+                    { text: "放下手機，深呼吸修身養性", correct: false, msg: "不可能，勝負欲極強的他忍不了！" },
+                    { text: "打字鼓勵隊友：「我們下次努力^^」", correct: false, msg: "這不是希澈，這是天使吧？" },
+                    { text: "開啟暴走碎念模式，一邊Carry一邊嘆氣", correct: true, msg: "沒錯！一邊碎念一邊展現神操作！" }
+                ]
+            },
+            {
+                scenario: "Ending 妖精",
+                desc: "演唱會舞台結束，鏡頭特寫到了希澈臉上。為了守護宇宙大明星的尊嚴，他會？",
+                emoji: "✨",
+                color: "bg-blue-500",
+                options: [
+                    { text: "害羞地比個手指愛心", correct: false, msg: "太普通了！這不是宇宙大明星的格調！" },
+                    { text: "撥弄長髮，露出自信且嫵媚的微笑", correct: true, msg: "就是這個！讓人入坑的致命美貌！" },
+                    { text: "拿出一把梳子開始梳頭", correct: false, msg: "雖然很有可能...但這次我們要帥氣的！" }
+                ]
+            }
+        ];
+
+        const RESULTS = {
+            perfect: { title: "🌸 核心花瓣認證 🌸", desc: "太強了！你是希澈肚子裡的蛔蟲吧！完全掌握了宇宙大明星的精髓！", color: "text-pink-600" },
+            good: { title: "💙 資深 ELF 💙", desc: "很了解希大喔！雖然偶爾會被他的四次元嚇到，但已經很棒了！", color: "text-blue-600" },
+            normal: { title: "👋 路人粉你好 👋", desc: "是被顏值吸引進來的嗎？歡迎入坑 Super Junior！", color: "text-gray-600" }
+        };
+
+        // --- 狀態變數 ---
+        let currentState = 'start'; // start, play, feedback, end
+        let qIndex = 0;
+        let score = 0;
+        let lastFeedback = {};
+
+        // --- DOM 元素 ---
+        const app = document.getElementById('app');
+
+        // --- 渲染函數 ---
+        function render() {
+            app.innerHTML = '';
+
+            if (currentState === 'start') {
+                app.innerHTML = `
+                    <div class="bg-white/90 backdrop-blur p-8 rounded-3xl shadow-xl text-center border-4 border-blue-200 slide-in">
+                        <div class="text-6xl mb-4 animate-[bounce-slow_2s_infinite]">😽</div>
+                        <h1 class="text-3xl font-bold text-blue-900 mb-2">宇宙大明星<br>保衛戰</h1>
+                        <p class="text-slate-600 mb-8">你是希澈的一日經紀人，你能幫他做出最正確的選擇嗎？</p>
+                        <button onclick="startGame()" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-xl font-bold py-4 rounded-2xl shadow-lg hover:scale-105 transition-transform">
+                            開始遊戲
+                        </button>
+                        <p class="mt-6 text-xs text-slate-400">For my dear GF 💙</p>
+                    </div>
+                `;
+            } else if (currentState === 'play') {
+                const q = QUESTIONS[qIndex];
+                const progress = ((qIndex + 1) / QUESTIONS.length) * 100;
+                
+                let optionsHtml = q.options.map((opt, idx) => `
+                    <button onclick="handleAnswer(${idx})" class="w-full text-left p-4 rounded-xl border-2 border-slate-100 hover:border-blue-300 hover:bg-blue-50 transition-all mb-3 flex items-start gap-3 group bg-white">
+                        <span class="bg-slate-100 text-slate-400 w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold shrink-0 mt-0.5">${String.fromCharCode(65 + idx)}</span>
+                        <span class="text-slate-700 font-medium">${opt.text}</span>
+                    </button>
+                `).join('');
+
+                app.innerHTML = `
+                    <div class="w-full h-2 bg-slate-200 rounded-full mb-6 overflow-hidden">
+                        <div class="h-full bg-blue-500 transition-all duration-500" style="width: ${progress}%"></div>
+                    </div>
+                    <div class="bg-white rounded-3xl shadow-xl overflow-hidden slide-in">
+                        <div class="${q.color} p-6 text-white text-center relative">
+                            <div class="text-5xl mb-2 relative z-10 drop-shadow-md">${q.emoji}</div>
+                            <h2 class="text-xl font-bold relative z-10 mb-2">${q.scenario}</h2>
+                            <p class="text-white/90 text-sm relative z-10">${q.desc}</p>
+                        </div>
+                        <div class="p-6 bg-slate-50">
+                            ${optionsHtml}
+                        </div>
+                    </div>
+                `;
+            } else if (currentState === 'feedback') {
+                const isCorrect = lastFeedback.correct;
+                const icon = isCorrect ? 
+                    `<div class="text-green-500 text-6xl mb-2">⭕</div>` : 
+                    `<div class="text-red-500 text-6xl mb-2">❌</div>`;
+                
+                app.innerHTML = `
+                    <div class="bg-white rounded-3xl shadow-xl p-8 text-center slide-in">
+                        ${icon}
+                        <h3 class="text-2xl font-bold mb-2 ${isCorrect ? 'text-green-600' : 'text-red-600'}">
+                            ${isCorrect ? '正解！' : '答錯了！'}
+                        </h3>
+                        <p class="text-slate-700 text-lg mb-8 font-medium">"${lastFeedback.msg}"</p>
+                        <button onclick="nextQuestion()" class="bg-blue-600 text-white px-8 py-3 rounded-full font-bold text-lg shadow-lg hover:bg-blue-700 w-full">
+                            ${qIndex < QUESTIONS.length - 1 ? '下一關 ➡️' : '看結果 🏆'}
+                        </button>
+                    </div>
+                `;
+            } else if (currentState === 'end') {
+                let res;
+                if (score === QUESTIONS.length) res = RESULTS.perfect;
+                else if (score >= QUESTIONS.length - 2) res = RESULTS.good;
+                else res = RESULTS.normal;
+
+                app.innerHTML = `
+                    <div class="bg-white p-8 rounded-3xl shadow-2xl text-center border-4 border-pink-200 slide-in">
+                        <div class="text-6xl mb-4">🏆</div>
+                        <div class="text-sm text-slate-500">最終得分</div>
+                        <div class="text-5xl font-black text-blue-900 mb-6">${score} / ${QUESTIONS.length}</div>
+                        
+                        <div class="mb-8 p-4 rounded-xl bg-slate-50 ${res.color}">
+                            <h3 class="text-2xl font-bold mb-2">${res.title}</h3>
+                            <p class="text-slate-700">${res.desc}</p>
+                        </div>
+
+                        <button onclick="location.reload()" class="w-full bg-white border-2 border-blue-500 text-blue-600 font-bold py-3 rounded-xl hover:bg-blue-50">
+                            再玩一次
+                        </button>
+                    </div>
+                `;
+                startPetalRain();
+            }
+        }
+
+        // --- 邏輯控制 ---
+        function startGame() {
+            currentState = 'play';
+            score = 0;
+            qIndex = 0;
+            render();
+        }
+
+        function handleAnswer(idx) {
+            const q = QUESTIONS[qIndex];
+            const choice = q.options[idx];
+            lastFeedback = { correct: choice.correct, msg: choice.msg };
+            
+            if (choice.correct) {
+                score++;
+                createPetal(5); // 答對撒花
+            }
+            
+            currentState = 'feedback';
+            render();
+        }
+
+        function nextQuestion() {
+            if (qIndex < QUESTIONS.length - 1) {
+                qIndex++;
+                currentState = 'play';
+            } else {
+                currentState = 'end';
+            }
+            render();
+        }
+
+        // --- 花瓣特效 ---
+        function createPetal(amount) {
+            for (let i = 0; i < amount; i++) {
+                const petal = document.createElement('div');
+                petal.innerHTML = '🌸';
+                petal.className = 'petal text-pink-300';
+                petal.style.left = Math.random() * 100 + 'vw';
+                petal.style.animation = `fall ${2 + Math.random() * 3}s linear forwards`;
+                document.body.appendChild(petal);
+                setTimeout(() => petal.remove(), 5000);
+            }
+        }
+
+        function startPetalRain() {
+            setInterval(() => createPetal(1), 300);
+        }
+
+        // --- 初始化 ---
+        render();
+
+    </script>
+</body>
+</html>
